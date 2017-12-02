@@ -20,8 +20,10 @@ public class Client {
             System.out.println("Socket connected to " + socket.getInetAddress() + ":" + socket.getPort());
             InputStream sockin = socket.getInputStream();
             OutputStream sockout = socket.getOutputStream();
-            System.out.println(sockin.read());
+            while (sockin.read() != -1)
+                System.out.println(sockin.read());
+            sockin.close();
+            sockout.close();
         }
     }
 }
-
