@@ -5,14 +5,34 @@ import java.net.Socket;
 
 class TelnetClient {
     private Socket socket;
-//    final String LOGIN = "admin";
-//    final String PASSWORD = "dEsKtOpF1685";
+    private BufferedReader in;
+    private PrintWriter out;
 
-    TelnetClient(String ip) throws IOException {
-//        final int TELNET_PORT = 22;
-        final int TELNET_PORT = 23;
-//        final int TELNET_PORT = 80;
-        this.socket = new Socket(ip, TELNET_PORT);
+    void connect(String ip) {
+        try {
+            socket = new Socket(ip, 23);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream(), true);
+        } catch (IOException e) {
+            System.out.println("CONNECTION ERROR!");
+        }
+    }
+
+    void readUntil(String target) throws IOException {
+        String output;
+        while (socket.isConnected()) {
+            output = in.readLine();
+            if (output.equals(target))
+                break;
+            System.out.println(in.readLine());
+        }
+    }
+
+    void write(String command) {
+        out.print(command);
+    }
+
+    void log() {
     }
 
     void login() throws Exception {
