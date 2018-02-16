@@ -15,50 +15,56 @@ public class Client {
         this.socket = new Socket(ip, TELNET_PORT);
     }
 
-    void login() throws IOException {
+    void login() throws Exception {
         final int lfCmd = 10;
         final int crCmd = 13;
-        boolean rawBytes = false;
+        boolean rawBytes = true;
         boolean reading = true;
 
         if (socket.isConnected()) {
-            BufferedInputStream sockIn = new BufferedInputStream(socket.getInputStream());
-//            BufferedOutputStream sockOut = new BufferedOutputStream(socket.getOutputStream());
+            InputStream sockInputStream = socket.getInputStream();
+            int inputByte = sockInputStream.read();
 
             while (reading) {
-                if (sockIn.read() != -1) {
-                    int inputByte;
-                    System.out.println(sockIn.available() + " bytes available");
-                    while (sockIn.available() > 0) {
-                        inputByte = sockIn.read();
+                if (inputByte > 0 && inputByte != 32) {
+                    if (rawBytes) {
+                        System.out.println(sockInputStream.available() + " bytes available");
+                    }
+                    while (sockInputStream.available() > 0) {
                         if (!rawBytes) {
                             switch (inputByte) {
-                                case lfCmd:
-                                    sockIn.read();
-                                    System.out.println("LF CR");
-                                    break;
                                 case crCmd:
-                                    System.out.println("CR");
+                                    while (inputByte == crCmd) {
+                                        inputByte = sockInputStream.read();
+                                    }
+                                    System.out.println();
+                                case lfCmd:
+                                    while (inputByte == lfCmd) {
+                                        inputByte = sockInputStream.read();
+                                    }
                                     break;
                                 default:
-//                                    System.out.print(inputByte);
-//                                    if (sockIn.available() != 0)
-//                                        System.out.print(" ");
                                     System.out.print((char) inputByte);
+                                    inputByte = sockInputStream.read();
                             }
                         } else {
                             System.out.print(inputByte);
-                            if (sockIn.available() != 0)
+                            if (sockInputStream.available() != 0)
                                 System.out.print(" ");
+                            inputByte = sockInputStream.read();
                         }
                     }
-                    System.out.println();
+                    System.out.println("\n" + inputByte);
                 } else {
                     reading = false;
                 }
+
+                if (rawBytes)
+                    System.out.println();
+                Thread.sleep(50);
             }
-            sockIn.close();
-            System.out.println("Socket closed!");
+            sockInputStream.close();
+            System.out.println("\nSocket closed!");
         }
     }
 }
