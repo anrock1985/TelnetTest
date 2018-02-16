@@ -3,12 +3,12 @@ package net.twse.telnettest;
 import java.io.*;
 import java.net.Socket;
 
-public class Client {
+class TelnetClient {
     private Socket socket;
 //    final String LOGIN = "admin";
 //    final String PASSWORD = "dEsKtOpF1685";
 
-    Client(String ip) throws IOException {
+    TelnetClient(String ip) throws IOException {
 //        final int TELNET_PORT = 22;
         final int TELNET_PORT = 23;
 //        final int TELNET_PORT = 80;
@@ -18,7 +18,7 @@ public class Client {
     void login() throws Exception {
         final int lfCmd = 10;
         final int crCmd = 13;
-        boolean rawBytes = true;
+        boolean rawBytes = false;
         boolean reading = true;
 
         if (socket.isConnected()) {
