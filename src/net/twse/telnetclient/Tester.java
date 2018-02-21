@@ -11,10 +11,13 @@ public class Tester {
 //        TelnetClient dlink = new TelnetClient("10.43.126.28");  //DES-3200-26 C1
 
         TelnetClient test = new TelnetClient();
-        TelnetReader tReader = new TelnetReader(test.connect("10.43.126.13"));
-        tReader.readUntil("tacacs+ login:"); ////DES-3200
+        TelnetReader tReader = new TelnetReader(test.connect("192.168.1.1"));
+//        TelnetReader tReader = new TelnetReader(test.connect("35.160.169.47"));
+//        tReader.readUntil("tacacs+ login:"); ////DES-3200
 //        tReader.readUntil("Username:"); //DES-1210-28/ME
 
+//        tReader.readUntil();
+        tReader.readChar(true, false);
 //        tReader.rawRead();
     }
 }

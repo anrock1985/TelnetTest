@@ -6,6 +6,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
+/*
+10  LF  (NL line feed, new line)
+13  CR  (carriage return)
+ */
+
 public class TelnetReader {
     private BufferedReader in;
     //Testing RAW Reader
@@ -20,13 +25,43 @@ public class TelnetReader {
     void readUntil(String target) throws IOException {
         String output;
         do {
-            output  = in.readLine();
+            output = in.readLine();
             //Убираем из вывода пустые строки
-            if (!(output.equals("")))
+            if (!(output.equals("")) && !(output.equals(" ")))
                 System.out.println(output);
-        } while (!(output.equals("null")) && !(output.contains(target)));
+        } while (!(output.contains(target)));
         in.close();
         System.out.println("\nTARGET REACHED!");
+    }
+
+    void readUntil() {
+        String output;
+        try {
+            for (; ; ) {
+                output = in.readLine();
+                System.out.println(output);
+            }
+        } catch (Exception e) {
+            System.out.println("\n" + e.getMessage());
+        }
+    }
+
+    void readChar(boolean wordWrap, boolean raw) {
+        int ch;
+        try {
+            for (ch = in.read(); ; ) {
+                if (wordWrap && ch == 10 && !raw) {
+                    ch = in.read();
+                    System.out.print("\n");
+                }
+                if (raw)
+                    System.out.print(ch + "'");
+                else
+                    System.out.print((char) ch);
+            }
+        } catch (Exception e) {
+            System.out.println("\n" + e.getMessage());
+        }
     }
 
     void rawRead() throws Exception {
@@ -64,7 +99,7 @@ public class TelnetReader {
                         } else {
                             System.out.print(inputByte);
                             if (sockInputStream.available() != 0)
-                                System.out.print(" ");
+                                System.out.print("'");
                             inputByte = sockInputStream.read();
                         }
                     }
@@ -75,7 +110,7 @@ public class TelnetReader {
 
                 if (rawBytes)
                     System.out.println();
-                Thread.sleep(50);
+                Thread.sleep(100);
             }
             sockInputStream.close();
             System.out.println("\nSocket closed!");
