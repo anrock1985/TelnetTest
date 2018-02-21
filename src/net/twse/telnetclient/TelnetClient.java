@@ -6,10 +6,6 @@ import java.net.Socket;
 class TelnetClient {
     private Socket socket;
 
-    public Socket getSocket() {
-        return socket;
-    }
-
     Socket connect(String ip) {
         try {
             socket = new Socket(ip, 23);
