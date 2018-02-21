@@ -6,12 +6,17 @@ import java.net.Socket;
 class TelnetClient {
     private Socket socket;
 
-    void connect(String ip) {
+    public Socket getSocket() {
+        return socket;
+    }
+
+    Socket connect(String ip) {
         try {
             socket = new Socket(ip, 23);
         } catch (IOException e) {
             System.out.println("CONNECTION ERROR!");
         }
+        return socket;
     }
 
     boolean isAlive() {

@@ -13,10 +13,14 @@ public class TelnetReader {
     }
 
     void readUntil(String target) throws IOException {
-        String output = in.readLine();
-        while (!output.equals(target)) {
-            output = in.readLine();
-            System.out.println(in.readLine());
-        }
+        String output;
+        do {
+            output  = in.readLine();
+            //Убираем из вывода пустые строки
+            if (!(output.equals("")))
+                System.out.println(output);
+        } while (!(output.equals("null")) && !(output.contains(target)));
+        in.close();
+        System.out.println("TARGET REACHED!");
     }
 }

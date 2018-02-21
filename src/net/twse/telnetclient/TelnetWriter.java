@@ -12,6 +12,6 @@ public class TelnetWriter {
     }
 
     void write(String command) {
-        out.print(command);
+        out.write(command);
     }
 }

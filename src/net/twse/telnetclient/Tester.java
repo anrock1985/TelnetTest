@@ -1,7 +1,5 @@
 package net.twse.telnetclient;
 
-import java.io.InputStream;
-
 public class Tester {
     public static void main(String[] args) throws Exception {
 //        TelnetClient dlink = new TelnetClient("192.168.1.1");
@@ -12,7 +10,8 @@ public class Tester {
 //        TelnetClient dlink = new TelnetClient("10.43.126.13");  //DES-1210-28/ME
 //        TelnetClient dlink = new TelnetClient("10.43.126.28");  //DES-3200-26 C1
         TelnetClient test = new TelnetClient();
-        test.connect("10.43.126.28");
+        TelnetReader tReader = new TelnetReader(test.connect("10.43.126.13"));
+        tReader.readUntil("login");
     }
 
 //    void login() throws Exception {
