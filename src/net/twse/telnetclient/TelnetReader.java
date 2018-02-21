@@ -50,18 +50,27 @@ public class TelnetReader {
         int ch;
         try {
             for (ch = in.read(); ; ) {
+                while (isOptions(ch)) {
+                    ch = in.read();
+                }
                 if (wordWrap && ch == 10 && !raw) {
                     ch = in.read();
                     System.out.print("\n");
                 }
-                if (raw)
+                if (raw) {
                     System.out.print(ch + "'");
-                else
+                    ch = in.read();
+                } else {
                     System.out.print((char) ch);
+                    ch = in.read();
+                }
             }
         } catch (Exception e) {
             System.out.println("\n" + e.getMessage());
         }
+    }
+
+    void optNegotiation() {
     }
 
     void rawRead() throws Exception {
@@ -115,5 +124,12 @@ public class TelnetReader {
             sockInputStream.close();
             System.out.println("\nSocket closed!");
         }
+    }
+
+    private boolean isOptions(int ch) {
+        if (ch == 0 || ch == 10 || ch == 13 || (ch >= 32 && ch <= 126))
+            return false;
+        else
+            return true;
     }
 }

@@ -18,6 +18,7 @@ public class Tester {
 
 //        tReader.readUntil();
         tReader.readChar(true, false);
+//        tReader.readChar(true, true);
 //        tReader.rawRead();
     }
 }
