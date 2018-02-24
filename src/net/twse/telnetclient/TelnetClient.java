@@ -121,23 +121,34 @@ THE NVT PRINTER AND KEYBOARD
 
 class TelnetClient {
     private Socket socket;
+    private TelnetReader reader;
+    private TelnetWriter writer;
+    private TelnetDebug debug;
 
-    Socket connect(String ip) {
+    TelnetClient(String ip) throws IOException {
+        socket = new Socket(ip, 23);
+        reader = new TelnetReader(socket);
+        writer = new TelnetWriter(socket);
+        debug = new TelnetDebug("c:\\Portable\\TelnetClient.log");
+    }
+
+    void read() {
         try {
-            socket = new Socket(ip, 23);
+            reader.readChar(true, false, false);
         } catch (IOException e) {
-            System.out.println("CONNECTION ERROR!");
+            debug.log(e.getMessage());
         }
-        return socket;
     }
 
-    boolean isAlive() {
-        return true;
+    void write(String cmd) {
+        try {
+            writer.write(cmd);
+        } catch (IOException e) {
+            debug.log(e.getMessage());
+        }
     }
 
-    void log(String s) throws FileNotFoundException {
-        File logFile = new File("c:\\TelnetClient.log");
-        PrintWriter out = new PrintWriter(new FileOutputStream(logFile, true));
-        out.print(s);
+    boolean isConnected() {
+        return socket.isConnected();
     }
 }

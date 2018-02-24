@@ -11,14 +11,14 @@ import java.net.Socket;
 13  CR  (carriage return)
  */
 
-public class TelnetReader {
+class TelnetReader {
     private BufferedReader in;
-    //Testing RAW Reader
+    //    Testing RAW read from socket
     private Socket rawSocket;
 
     TelnetReader(Socket socket) throws IOException {
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        //Testing RAW Reader
+        //    Testing RAW read from socket
         rawSocket = socket;
     }
 
@@ -26,47 +26,33 @@ public class TelnetReader {
         String output;
         do {
             output = in.readLine();
-            //Убираем из вывода пустые строки
+//            Skip empty lines
             if (!(output.equals("")) && !(output.equals(" ")))
                 System.out.println(output);
         } while (!(output.contains(target)));
-        in.close();
         System.out.println("\nTARGET REACHED!");
     }
 
-    void readUntil() {
-        String output;
-        try {
-            for (; ; ) {
-                output = in.readLine();
-                System.out.println(output);
-            }
-        } catch (Exception e) {
-            System.out.println("\n" + e.getMessage());
-        }
-    }
-
-    void readChar(boolean wordWrap, boolean raw) {
+    void readChar(boolean wordWrap, boolean rawData, boolean negotiateOptions) throws IOException {
         int ch;
-        try {
-            for (ch = in.read(); ; ) {
+        for (ch = in.read(); ch != -1; ) {
+            if (negotiateOptions) {
                 while (isOptions(ch)) {
                     ch = in.read();
                 }
-                if (wordWrap && ch == 10 && !raw) {
-                    ch = in.read();
-                    System.out.print("\n");
-                }
-                if (raw) {
-                    System.out.print(ch + "'");
-                    ch = in.read();
-                } else {
-                    System.out.print((char) ch);
-                    ch = in.read();
-                }
             }
-        } catch (Exception e) {
-            System.out.println("\n" + e.getMessage());
+            if (wordWrap && ch == 10 && !rawData) {
+                System.out.print("\n");
+                ch = in.read();
+                while (ch == 10 || ch == 13)
+                    ch = in.read();
+            } else if (rawData) {
+                System.out.print(ch + "'");
+                ch = in.read();
+            } else {
+                System.out.print((char) ch);
+                ch = in.read();
+            }
         }
     }
 
