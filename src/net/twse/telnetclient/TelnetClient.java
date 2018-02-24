@@ -132,6 +132,16 @@ class TelnetClient {
         debug = new TelnetDebug("c:\\Portable\\TelnetClient.log");
     }
 
+    void dlinkLogIn() {
+        if (reader.readUntil("tacacs+ login:")) {
+            writer.write("a.pokazanov");
+            if (reader.readUntil("password:")) {
+                writer.write("celokoD)");
+                read();
+            }
+        }
+    }
+
     void read() {
         try {
             reader.readChar(true, false, false);
@@ -141,11 +151,7 @@ class TelnetClient {
     }
 
     void write(String cmd) {
-        try {
             writer.write(cmd);
-        } catch (IOException e) {
-            debug.log(e.getMessage());
-        }
     }
 
     boolean isConnected() {

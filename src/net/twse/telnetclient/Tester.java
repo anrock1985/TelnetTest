@@ -14,6 +14,6 @@ class Tester {
 //        tReader.readUntil("Username:"); //DES-1210-28/ME
 
         TelnetClient test = new TelnetClient("10.43.126.13");
-        test.read();
+        test.dlinkLogIn();
     }
 }

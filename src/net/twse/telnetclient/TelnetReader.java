@@ -22,15 +22,19 @@ class TelnetReader {
         rawSocket = socket;
     }
 
-    void readUntil(String target) throws IOException {
-        String output;
-        do {
-            output = in.readLine();
+    boolean readUntil(String target) {
+        String output = null;
+        try {
+            do {
+                output = in.readLine();
 //            Skip empty lines
-            if (!(output.equals("")) && !(output.equals(" ")))
-                System.out.println(output);
-        } while (!(output.contains(target)));
-        System.out.println("\nTARGET REACHED!");
+                if (!(output.equals("")) && !(output.equals(" ")))
+                    System.out.println(output);
+            } while (!(output.contains(target)));
+        } catch (IOException e) {
+            e.getStackTrace();
+        }
+        return output.contains(target);
     }
 
     void readChar(boolean wordWrap, boolean rawData, boolean negotiateOptions) throws IOException {

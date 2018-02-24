@@ -13,7 +13,11 @@ class TelnetWriter {
         out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
     }
 
-    void write(String command) throws IOException {
-        out.write(command);
+    void write(String command) {
+        try {
+            out.write(command);
+        } catch (IOException e) {
+            e.getStackTrace();
+        }
     }
 }
