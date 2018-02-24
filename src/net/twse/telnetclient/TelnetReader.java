@@ -15,6 +15,7 @@ class TelnetReader {
     private BufferedReader in;
     //    Testing RAW read from socket
     private Socket rawSocket;
+    private int ch;
 
     TelnetReader(Socket socket) throws IOException {
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -38,7 +39,6 @@ class TelnetReader {
     }
 
     void readChar(boolean wordWrap, boolean rawData, boolean negotiateOptions) throws IOException {
-        int ch;
         for (ch = in.read(); ch != -1; ) {
             if (negotiateOptions) {
                 while (isOptions(ch)) {
@@ -58,6 +58,49 @@ class TelnetReader {
                 ch = in.read();
             }
         }
+    }
+
+    StringBuilder sbRead() {
+        StringBuilder sb = new StringBuilder();
+        try {
+            for (ch = in.read(); ch != -1 && ch != 255; ) {
+                while (ch != 10 && ch != 13 && !isOptions(ch)) {
+                    sb.append((char) ch);
+                    ch = in.read();
+                }
+                while (isOptions(ch)) {
+                    ch = in.read();
+                }
+                if (ch == 10 || ch == 13) {
+                    while (ch == 10 || ch == 13)
+                        ch = in.read();
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            e.getStackTrace();
+        }
+        return sb;
+    }
+
+    StringBuilder sbReadSock() throws Exception {
+        InputStreamReader in = new InputStreamReader(rawSocket.getInputStream());
+        StringBuilder sb = new StringBuilder();
+        for (ch = in.read(); in.ready() && ch != -1; ch = in.read()) {
+            if (ch != 10 && ch != 13) {
+                sb.append((char) ch);
+            }
+            while (ch == 10 || ch == 13) {
+                ch = in.read();
+            }
+        }
+        return sb;
+    }
+
+    StringBuilder sbReadX() throws IOException {
+        StringBuilder sb = new StringBuilder();
+        sb.append(ch);
+        return sb;
     }
 
     void optNegotiation() {
@@ -117,7 +160,7 @@ class TelnetReader {
     }
 
     private boolean isOptions(int ch) {
-        if (ch == 0 || ch == 10 || ch == 13 || (ch >= 32 && ch <= 126))
+        if (ch == 0 || ch == 10 || ch == 13 || (ch >= 32 && ch <= 63) || (ch >= 65 && ch <= 90) || (ch >= 96 && ch <= 122))
             return false;
         else
             return true;

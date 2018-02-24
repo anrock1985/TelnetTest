@@ -142,6 +142,18 @@ class TelnetClient {
         }
     }
 
+    void test1() {
+        System.out.println(reader.sbRead());
+    }
+
+    void test2() throws IOException {
+        System.out.println(reader.sbReadX());
+    }
+
+    void testRaw() throws Exception {
+        System.out.println(reader.sbReadSock());
+    }
+
     void read() {
         try {
             reader.readChar(true, false, false);
@@ -151,7 +163,7 @@ class TelnetClient {
     }
 
     void write(String cmd) {
-            writer.write(cmd);
+        writer.write(cmd);
     }
 
     boolean isConnected() {
