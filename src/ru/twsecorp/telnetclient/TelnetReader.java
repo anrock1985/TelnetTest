@@ -1,4 +1,4 @@
-package net.twse.telnetclient;
+package ru.twsecorp.telnetclient;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -103,7 +103,7 @@ class TelnetReader {
         return sb;
     }
 
-    void optNegotiation() {
+    void negotiateOptions() {
     }
 
     void rawRead() throws Exception {

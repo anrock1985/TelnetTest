@@ -1,4 +1,4 @@
-package net.twse.telnetclient;
+package ru.twsecorp.telnetclient;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

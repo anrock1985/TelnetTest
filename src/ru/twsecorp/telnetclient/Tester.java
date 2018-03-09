@@ -1,4 +1,4 @@
-package net.twse.telnetclient;
+package ru.twsecorp.telnetclient;
 
 class Tester {
     public static void main(String[] args) {
